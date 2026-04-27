@@ -1,6 +1,6 @@
 [project]
 name = "simple-tcp-server"
-version = "0.1.0"
+version = "0.1.1"
 description = "Simple TCP server/client framework."
 authors = [
     {name = "GGN_2015",email = "neko@jlulug.org"}

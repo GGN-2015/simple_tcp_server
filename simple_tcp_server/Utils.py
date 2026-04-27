@@ -1,27 +1,29 @@
 import re
 
-# 单字节标志符号
-half_eoq = b"$"
+# Single-byte flag symbol
+HALF_EOQ = b"$"
 
-# 替换转义字符
+# Buffer size
+MAX_BUFFER = 262144
+
+# Replace escaped octal bytes
 def replace_octal_bytes(data: bytes) -> bytes:
     return re.sub(
-        re.escape(half_eoq) + rb"(\d{3})",
+        re.escape(HALF_EOQ) + rb"(\d{3})",
         lambda m: bytes([int(m[1], 8)]),
         data
     )
 
-# 处理转义字符
-def anti_escape(msg:bytes) -> bytes:
+# Process escape characters
+def unescape(msg: bytes) -> bytes:
     return replace_octal_bytes(msg)
 
-# 将字符串中的 _eoq() 进行特殊处理
-# 本质上就是补上一个三位八进制数
-def escape(msg:bytes) -> bytes:
-    number = f"{half_eoq[0]:03o}".encode()
-    return msg.replace(half_eoq, half_eoq + number)
+# Special handling for _eoq() sequences in the message
+# Essentially appends a 3-digit octal number
+def escape(msg: bytes) -> bytes:
+    octal_str = f"{HALF_EOQ[0]:03o}".encode()
+    return msg.replace(HALF_EOQ, HALF_EOQ + octal_str)
 
-
-# 获取结束标志（长度总为 2）
+# Get end-of-query marker (always length 2)
 def eoq() -> bytes:
-    return half_eoq + half_eoq
+    return HALF_EOQ + HALF_EOQ
